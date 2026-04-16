@@ -11,6 +11,8 @@ GRID_COUNT = WINDOW_SIZE // TILE_SIZE
 
 screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
 pygame.display.set_caption("Had")
+icon = pygame.image.load("favicon.ico")
+pygame.display.set_icon(icon)
 
 clock = pygame.time.Clock()
 
@@ -24,9 +26,8 @@ LIME = (0, 255, 0)
 RED = (200, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (70, 70, 70)
-GREEN_1 = (0,225,0)
-
-GREEN_2 = (0,200,0)
+GREEN_1 = (50,225,50)
+GREEN_2 = (50,215,50)
 PURPLE = (128, 0, 128)
 Purple2 = (170, 0, 170)
 PURPLE_3 = (200, 0, 200)
@@ -47,17 +48,24 @@ def generate_apple():
         if pos not in snake:
             return pos
 def draw_game():
-    screen.fill(GREEN)
+    for row in range(GRID_COUNT):
+        for col in range(GRID_COUNT):
+            # Pokud je součet řádku a sloupce sudý, použij GREEN, jinak GREEN_1
+            color = GREEN_2 if (row + col) % 2 == 0 else GREEN_1
+            pygame.draw.rect(screen, color, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE))
     
 
     # jablko
+
     apple_x = apple[0] * TILE_SIZE + TILE_SIZE // 2
     apple_y = apple[1] * TILE_SIZE + TILE_SIZE // 2
 
 # poloměr o něco menší než políčko
-    radius = TILE_SIZE // 2 - 2
+    apple_img = pygame.image.load("apple.ico")
+    apple_img = pygame.transform.scale(apple_img, (TILE_SIZE, TILE_SIZE))
 
-    pygame.draw.circle(screen, RED, (apple_x, apple_y), radius)
+    apple_rect = (apple[0] * TILE_SIZE, apple[1] * TILE_SIZE)
+    screen.blit(apple_img, apple_rect)
 
     # had
     for i, segment in enumerate(snake):
@@ -100,24 +108,25 @@ def draw_game():
                 tongue_end = (x_pixel + TILE_SIZE//2, y_pixel + TILE_SIZE + tongue_length)
 
             # vykreslení očí
-            pygame.draw.circle(screen, BLACK, eye1, eye_size)
-            pygame.draw.circle(screen, BLACK, eye2, eye_size)
+            pygame.draw.circle(screen, WHITE, eye1, eye_size)
+            pygame.draw.circle(screen, WHITE, eye2, eye_size)
+
+            pupil_size = 2
+            # Posuneme zorničku o 1 pixel ve směru dx, dy
+            pupil1 = (eye1[0] + dx, eye1[1] + dy)
+            pupil2 = (eye2[0] + dx, eye2[1] + dy)
+            
+            pygame.draw.circle(screen, BLACK, pupil1, pupil_size)
+            pygame.draw.circle(screen, BLACK, pupil2, pupil_size)
 
             # vykreslení jazyka
-            pygame.draw.line(screen, (255, 0, 255),
+            pygame.draw.line(screen, (255, 0, 0),
                             tongue_start, tongue_end, 3)
 
         else:
             # ===== TĚLO =====
             body_length = len(snake) - 1  # bez hlavy
-            devide = body_length // 2
-
-            if i < devide:
-                color = Purple2
-            elif i <= devide *1.5:
-                color = PURPLE
-            elif i > devide * 2:
-                color = BLACK
+            color = (200 - (200*i/body_length), 50 - (50*i/body_length), 200 - (200*i/body_length))
             
 
             pygame.draw.rect(screen, color,
