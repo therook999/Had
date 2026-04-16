@@ -5,8 +5,8 @@ import sys
 pygame.init()
 
 # ===== NASTAVENÍ =====
-WINDOW_SIZE = 800
-TILE_SIZE = 50
+WINDOW_SIZE = 700
+TILE_SIZE = 20
 GRID_COUNT = WINDOW_SIZE // TILE_SIZE
 
 screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
@@ -26,7 +26,10 @@ WHITE = (255, 255, 255)
 GRAY = (70, 70, 70)
 GREEN_1 = (0,225,0)
 
-clock.tick(5)
+GREEN_2 = (0,200,0)
+PURPLE = (128, 0, 128)
+Purple2 = (170, 0, 170)
+PURPLE_3 = (200, 0, 200)
 
 
 def reset_game():
@@ -44,7 +47,8 @@ def generate_apple():
         if pos not in snake:
             return pos
 def draw_game():
-    screen.fill(BLACK)
+    screen.fill(GREEN)
+    
 
     # jablko
     apple_x = apple[0] * TILE_SIZE + TILE_SIZE // 2
@@ -62,7 +66,7 @@ def draw_game():
 
         if i == 0:
             # ===== HLAVA =====
-            pygame.draw.rect(screen, LIME,
+            pygame.draw.rect(screen, PURPLE_3,
                             (x_pixel, y_pixel, TILE_SIZE, TILE_SIZE))
         
             eye_size = 4
@@ -106,12 +110,15 @@ def draw_game():
         else:
             # ===== TĚLO =====
             body_length = len(snake) - 1  # bez hlavy
-            half = body_length // 2
+            devide = body_length // 2
 
-            if i <= half:
-                color = GREEN_1
-            else:
-                color = GREEN
+            if i < devide:
+                color = Purple2
+            elif i <= devide *1.5:
+                color = PURPLE
+            elif i > devide * 2:
+                color = BLACK
+            
 
             pygame.draw.rect(screen, color,
                             (x_pixel, y_pixel, TILE_SIZE, TILE_SIZE))
@@ -150,7 +157,7 @@ reset_game()
 
 # ===== HLAVNÍ SMYČKA =====
 while True:
-    clock.tick(10)
+    clock.tick(6)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
